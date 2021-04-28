@@ -1,13 +1,14 @@
-import logo from './logo.svg';
+/*import logo from './logo.svg';
 import './App.css';
-import bUtton from 'material-ui/core/Button'
+import Button from 'material-ui/core/Button'
+*/
 
-function App() {
-  return (
-    <div className="App">
+
+/*   <div className="App">
       <header className="App-header">
         <h1>Projeto Karangos</h1>
-        <Button>Clique aqui!</Button>
+        <Button variant="contained"
+        color="primary">Clique aqui!</Button>
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
@@ -22,6 +23,34 @@ function App() {
         </a>
       </header>
     </div>
+    */
+
+
+
+import { createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
+import yellow from '@material-ui/core/colors/yellow';
+import red from '@material-ui/core/colors/red';
+import TopBar from './ui/TopBar'
+
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+    primary: {
+      main: yellow[500],
+    },
+    secondary: {
+      main: red[500],
+    },
+  },
+});
+
+    function App() {
+  return (
+    <ThemeProvider theme={theme}>
+    <TopBar/>
+    <FooterBar/>
+    </ThemeProvider>
+ 
   );
 }
 
