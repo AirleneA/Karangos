@@ -30,7 +30,8 @@ import Button from 'material-ui/core/Button'
 import { createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import yellow from '@material-ui/core/colors/yellow';
 import red from '@material-ui/core/colors/red';
-import TopBar from './ui/TopBar'
+import TopBar from './ui/TopBar';
+import FooterBar from './ui/FooterBar'
 
 const theme = createMuiTheme({
   palette: {
