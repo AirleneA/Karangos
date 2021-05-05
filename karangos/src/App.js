@@ -34,6 +34,9 @@ import TopBar from './ui/TopBar'
 import FooterBar from './ui/FooterBar'
 import Box from '@material-ui/core/Box'
 import { makeStyles } from '@material-ui/core/styles'
+import KarangosList from'./routed/KarangosList'
+import KarangosForm from'./routed/KarangosForm'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
 const theme = createMuiTheme({
   palette: {
@@ -52,6 +55,12 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
     minHeight: '100vh', // 100% da altura da área de visualização
     margin: '0 0 42px 0'  // margem de 42px inferior para acomodar a barra inferior
+  },
+  
+  routed: {
+    padding: '25px'
+    color: theme.palette.text.primary,
+    fontFamilly:theme.typography.fontfamily
   }
 }))
 
@@ -59,8 +68,22 @@ function Main() {
   const classes = useStyles()
   return (
     <Box className={classes.main}>
-      <TopBar />
-      <FooterBar />
+      <BrowserRouter>
+        <TopBar />
+        <Box id= "routed" classname={classes.routed}>
+          <Swith>
+            <Route path="/list">
+              <karangosList/>
+            </Route>
+
+            <Route path="/new">
+              <karangosForms/>
+            </Route>
+
+          </Swith>
+        </Box>
+      <FooterBar/>
+      </BrowserRouter>
     </Box>
   )
 }
