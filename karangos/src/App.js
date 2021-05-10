@@ -24,9 +24,6 @@ import Button from '@material-ui/core/Button'
     </header>
   </div>
 */
-
-
-
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import yellow from '@material-ui/core/colors/yellow';
 import red from '@material-ui/core/colors/red';
@@ -34,9 +31,9 @@ import TopBar from './ui/TopBar'
 import FooterBar from './ui/FooterBar'
 import Box from '@material-ui/core/Box'
 import { makeStyles } from '@material-ui/core/styles'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import KarangosList from'./routed/KarangosList'
 import KarangosForm from'./routed/KarangosForm'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
 const theme = createMuiTheme({
   palette: {
@@ -58,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
   
   routed: {
-    padding: '25px'
+    padding: '25px',
     color: theme.palette.text.primary,
     fontFamilly:theme.typography.fontfamily
   }
@@ -68,21 +65,22 @@ function Main() {
   const classes = useStyles()
   return (
     <Box className={classes.main}>
-      <BrowserRouter>
+      <BrowserRouter>{/* Inicia a região onde pode haver troca dinâmica de elementos*/}
         <TopBar />
-        <Box id= "routed" classname={classes.routed}>
-          <Swith>
+        <Box id="routed" classname={classes.routed}>
+          <Switch> {/* Determina qual elemento será exibido, de acordo com a rota */}
+
             <Route path="/list">
-              <karangosList/>
+              <KarangosList/>
             </Route>
 
             <Route path="/new">
-              <karangosForms/>
+              <KarangosForm/>
             </Route>
 
-          </Swith>
+          </Switch>
         </Box>
-      <FooterBar/>
+        <FooterBar/>
       </BrowserRouter>
     </Box>
   )
@@ -97,3 +95,5 @@ function App() {
 }
 
 export default App;
+
+
