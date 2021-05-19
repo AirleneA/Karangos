@@ -50,9 +50,9 @@ const theme = createMuiTheme({
 const useStyles = makeStyles((theme) => ({
   main: {
     backgroundColor: theme.palette.background.default,
-    minHeight: '100vh', // 100% da altura da área de visualização
-    margin: '0 0 42px 0'  // margem de 42px inferior para acomodar a barra inferior
-  },
+    paddingBottom: '42px', // evita que o footer cubra o conteúdo
+    minHeight: '100vh' // 100% da altura da área de visualização
+ },
   
   routed: {
     padding: '25px',
