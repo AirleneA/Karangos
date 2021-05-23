@@ -42,67 +42,65 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(2, 0)
   }
 }));
-
 export default function KarangosList() {
   const classes = useStyles()
 
   // Variáveis que conterão dados PRECISAM ser inicializadas como vetores vazios
-  const [karangos, setKarangos] = useState([])  
+  const [karangos, setKarangos] = useState([])
   const [deletable, setDeletable] = useState()        // Código do registro a ser excluído
   const [dialogOpen, setDialogOpen] = useState(false) // O diálogo de confirmação está aberto?
   const [sbOpen, setSbOpen] = useState(false)
   const [sbSeverity, setSbSeverity] = useState('success')
   const [sbMessage, setSbMessage] = useState('Exclusão realizada com sucesso.')
-  
+
   const history = useHistory()
 
   useEffect(() => {
-    
-    getData()
-  }, []) // Quando a lista de dependências é um vetor vazio, o useEffect()
-         // é executado apenas uma vez, no carregamento inicial do componente
-  async function getData() {
+    async function getData() {
       try { // tenta buscar os dados
-          let response = await axios.get('https://api.faustocintra.com.br/karangos?by=marca,modelo')
-          if(response.data.length > 0) setKarangos(response.data)
+        let response = await axios.get('https://api.faustocintra.com.br/karangos?by=marca,modelo')
+        setKarangos(response.data)
       }
       catch(error) {
         console.error(error)
       }
-  }      
-         async function deleteItem() {
-          try {
-            await axios.delete(`https://api.faustocintra.com.br/karangos/${deletable}`)
-            getData() // Atualiza os dados da tabela
-            setSbSeverity('success')
-            setSbMessage('Exclusão efetuada com sucesso.')
-          }
-          catch(error) {
-            setSbSeverity('error')
-            setSbMessage('ERRO: ' + error.message)
-          }
-          setSbOpen(true)   // Exibe a snackbar
-        }
-      
-        function handleDialogClose(result) {
-          setDialogOpen(false)
-      
-          // Se o usuário concordou com a exclusão 
-          if(result) deleteItem()
-        }
-      
-        function handleDelete(id) {
-          setDeletable(id)
-          setDialogOpen(true)
-        }
-      
-        function handleSbClose() {
-          setSbOpen(false)    // Fecha a snackbar
-        }
-            
+    }
+    getData()
+  }, []) // Quando a lista de dependências é um vetor vazio, o useEffect()
+         // é executado apenas uma vez, no carregamento inicial do componente
+
+  async function deleteItem() {
+    try {
+      await axios.delete(`https://api.faustocintra.com.br/karangos/${deletable}`)
+      setSbSeverity('success')
+      setSbMessage('Exclusão efetuada com sucesso.')
+    }
+    catch(error) {
+      setSbSeverity('error')
+      setSbMessage('ERRO: ' + error.message)
+    }
+    setSbOpen(true)   // Exibe a snackbar
+  }
+
+  function handleDialogClose(result) {
+    setDialogOpen(false)
+
+    // Se o usuário concordou com a exclusão 
+    if(result) deleteItem()
+  }
+
+  function handleDelete(id) {
+    setDeletable(id)
+    setDialogOpen(true)
+  }
+
+  function handleSbClose() {
+    setSbOpen(false)    // Fecha a snackbar
+  }
+
   return (
     <>
-     <ConfirmDialog isOpen={dialogOpen} onClose={handleDialogClose}>
+      <ConfirmDialog isOpen={dialogOpen} onClose={handleDialogClose}>
         Deseja realmente excluir este karango?
       </ConfirmDialog>
 
@@ -123,7 +121,7 @@ export default function KarangosList() {
       <Table className={classes.table} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
-           <TableCell align="right">Cód.</TableCell>
+            <TableCell align="right">Cód.</TableCell>
             <TableCell>Marca</TableCell>
             <TableCell>Modelo</TableCell>
             <TableCell>Cor</TableCell>
@@ -137,14 +135,14 @@ export default function KarangosList() {
         </TableHead>
         <TableBody>
           {karangos.map((karango) => (
-          <TableRow key={karango.id} className={classes.tableRow}>
-          <TableCell align="right">{karango.id}</TableCell>
-          <TableCell>{karango.marca}</TableCell>
-          <TableCell>{karango.modelo}</TableCell>
-          <TableCell>{karango.cor}</TableCell>
-          <TableCell align="center">{karango.ano_fabricacao}</TableCell>
+            <TableRow key={karango.id} className={classes.tableRow}>
+              <TableCell align="right">{karango.id}</TableCell>
+              <TableCell>{karango.marca}</TableCell>
+              <TableCell>{karango.modelo}</TableCell>
+              <TableCell>{karango.cor}</TableCell>
+              <TableCell align="center">{karango.ano_fabricacao}</TableCell>
               <TableCell align="center">
-              <Checkbox checked={karango.importado === "1"} readOnly />
+                <Checkbox checked={karango.importado === "1"} readOnly />
               </TableCell>
               <TableCell align="center">{karango.placa}</TableCell>
               <TableCell align="right">
@@ -156,7 +154,7 @@ export default function KarangosList() {
                 </IconButton>                
               </TableCell>
               <TableCell align="center">
-              <IconButton aria-label="excluir" onClick={() => handleDelete(karango.id)}>
+                 <IconButton aria-label="excluir" onClick={() => handleDelete(karango.id)}>
                   <DeleteIcon color="error" />
                 </IconButton>
               </TableCell>
@@ -168,3 +166,61 @@ export default function KarangosList() {
     </>
   )
 }
+ 56  karangos/src/ui/ConfirmDialog.js 
+@@ -0,0 +1,56 @@
+import React from 'react';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import WarningIcon from '@material-ui/icons/Warning';
+import { makeStyles } from '@material-ui/core/styles';
+import yellow from '@material-ui/core/colors/yellow'
+
+const useStyle = makeStyles(theme => ({
+  dialogContent: {
+    display: 'flex',
+    justifyContent: 'space-between'
+  },
+  warningIcon: {
+    color: yellow[500],
+    marginRight: theme.spacing(2)
+  }
+}))
+
+export default function ConfirmDialog({title = 'Confirmar', isOpen = false, onClose, children}) {
+  const classes = useStyle()
+
+  const handleClose = (result) => {
+    onClose(result)
+  };
+
+  return (
+    <div>
+      <Dialog
+        open={isOpen}
+        onClose={() => handleClose(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+        <DialogContent className={classes.dialogContent}>
+          <WarningIcon className={classes.warningIcon} fontSize="large" />
+          <DialogContentText id="alert-dialog-description">
+            {children}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleClose(true)} color="primary">
+            OK
+          </Button>
+          <Button onClick={() => handleClose(false)} color="primary" autoFocus>
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+} 
