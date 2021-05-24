@@ -45,7 +45,7 @@ export default function KarangosList() {
   const [sbOpen, setSbOpen] = useState(false)
   const [sbSeverity, setSbSeverity] = useState('success')
   const [sbMessage, setSbMessage] = useState('Exclusão realizada com sucesso.')
-
+  
   const history = useHistory()
 
   useEffect(() => {
@@ -183,13 +183,13 @@ export default function KarangosList() {
       <ConfirmDialog isOpen={dialogOpen} onClose={handleDialogClose}>
         Deseja realmente excluir este karango?
       </ConfirmDialog>
-
+      
       <Snackbar open={sbOpen} autoHideDuration={6000} onClose={handleSbClose}>
         <MuiAlert elevation={6} variant="filled" onClose={handleSbClose} severity={sbSeverity}>
           {sbMessage}
         </MuiAlert>
       </Snackbar>
-
+      
       <h1>Listagem de Karangos</h1>
       <Toolbar className={classes.toolbar}>
         <Button color="secondary" variant="contained" size="large" 
@@ -198,10 +198,9 @@ export default function KarangosList() {
         </Button>
       </Toolbar>
       <Paper elevation={4}>
-        <DataGrid className={classes.dataGrid} rows={karangos} columns={columns} pageSize={10} autoHeight={true} disableSelectionOnClick={true} />
+        <DataGrid className={classes.dataGrid} rows={karangos} columns={columns} 
+        pageSize={10} autoHeight={true} disableSelectionOnClick={true} />
       </Paper>
     </>
   )
-} 
- 
- 
+}
