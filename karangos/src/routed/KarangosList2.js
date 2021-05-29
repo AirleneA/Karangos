@@ -99,7 +99,8 @@ export default function KarangosList() {
       headerName: 'Cód.',
       align: 'right',
       headerAlign: 'right',  
-      flex: true 
+      flex: true,
+      sortComparator: (v1, v2) => Number(v1) > Number(v2) ? 1 : -1
     },
     { 
       field: 'marca', 
@@ -123,7 +124,8 @@ export default function KarangosList() {
       headerName: 'Ano',
       align: 'center',
       headerAlign: 'center', 
-      flex: true 
+      flex: true,
+      sortComparator: (v1, v2) => Number(v1) > Number(v2) ? 1 : -1 
     },
     { 
       field: 'importado', 
@@ -148,9 +150,10 @@ export default function KarangosList() {
       align: 'right', 
       headerAlign: 'right', 
       flex: true,
-      valueGetter: params => (
+      valueFormatter: params => (
         Number(params.value).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-      )
+      ),
+      sortComparator: (v1, v2) => Number(v1) > Number(v2) ? 1 : -1
     },
     { 
       field: 'editar',
@@ -198,8 +201,7 @@ export default function KarangosList() {
         </Button>
       </Toolbar>
       <Paper elevation={4}>
-        <DataGrid className={classes.dataGrid} rows={karangos} columns={columns} 
-        pageSize={10} autoHeight={true} disableSelectionOnClick={true} />
+        <DataGrid className={classes.dataGrid} rows={karangos} columns={columns} pageSize={10} autoHeight={true} disableSelectionOnClick={true} />
       </Paper>
     </>
   )

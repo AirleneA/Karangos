@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Button from '@material-ui/core/Button'
 */
+
 /*
   <div className="App">
     <header className="App-header">
@@ -57,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: theme.typography.fontFamily
   }
 }))
+
 function Main() {
   const classes = useStyles()
   return (
@@ -70,15 +72,18 @@ function Main() {
               <KarangosList />
             </Route>
             <Route path="/new">
+
               <KarangosForm />
             </Route>
           </Switch>
+
         </Box>
         <FooterBar />
       </BrowserRouter>
     </Box>
   )
 }
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -86,4 +91,5 @@ function App() {
     </ThemeProvider>
   );
 }
+
 export default App;
