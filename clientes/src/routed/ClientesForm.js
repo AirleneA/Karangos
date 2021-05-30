@@ -3,7 +3,6 @@ import TextField from '@material-ui/core/TextField'
 import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
 import InputMask from 'react-input-mask'
 import { makeStyles } from '@material-ui/core/styles'
 import InputAdornment from '@material-ui/core/InputAdornment'
@@ -38,7 +37,7 @@ const useStyles = makeStyles(theme => ({
 export default function ClientesForm() {
   const classes = useStyles()
 
-  const colors = [
+  const estados = [
     'Amarelo',
     'Azul',
     'Bege',
@@ -56,10 +55,7 @@ export default function ClientesForm() {
     'Vinho'
   ]
 
-  const years = []
-  for(let i = (new Date()).getFullYear(); i >= 1900; i--) years.push(i)
-
-  // Classes de caracters para a máscara da placa
+   // Classes de caracters para a máscara da placa
   // 1) Três primeiras posições, somente letras (maiúsculas ou minúsculas) ~> [A-Za-z]
   // 2) Quinta, sétima e oitava posições, somente dígitos ~> [0-9]
   // 3) Sexta posição: dígitos ou letras (maiúsculas ou minúsculas) de A a J ~> [0-9A-Ja-j]
@@ -78,7 +74,7 @@ export default function ClientesForm() {
   // Máscara para CPF: '000.000.000-00'
   // Máscara para CNPJ: '00.000.000/0000-00'
 
-  const [clientes, setClientes] = useState({
+  const [cliente, setCliente] = useState({
     id: null,
     nome: '',
     cpf: '',
@@ -112,17 +108,17 @@ export default function ClientesForm() {
     setCurrentId(event.target.id)
     if(event.target.id) property = event.target.id
     else if(property === 'cpf') {
-      setClientes({...clientes, cpf: event.target.value.toUpperCase()})
+      setCliente({...cliente, cpf: event.target.value.toUpperCase()})
     }
-    else if(property === 'rg') {
-      setClientes({...clientes, cpf: event.target.value.toUpperCase()})
+    else if(property === 'uf') {
+      setCliente({...cliente, uf: event.target.value.toUpperCase()})
     }
 
     else {
       // Quando o nome de uma propriedade de objeto aparece entre [],
       // significa que o nome da propriedade será determinado pela
       // variável ou expressão contida dentro dos colchetes
-      setClientes({...clientes, [property]: event.target.value})
+      setCliente({...cliente, [property]: event.target.value})
     }
   }
 
@@ -131,7 +127,7 @@ export default function ClientesForm() {
       // Desabilita o botão de enviar para evitar envios duplicados
       setSendBtnStatus({disabled: true, label: 'Enviando...'})
 
-      await axios.post('https://api.faustocintra.com.br/clientes', clientes)
+      await axios.post('https://api.faustocintra.com.br/clientes', cliente)
 
       // Mostra a SnackBar
       setSbStatus({open: true, severity: 'success', message: 'Dados salvos com sucesso!'})
@@ -171,46 +167,45 @@ export default function ClientesForm() {
       <h1>Cadastrar novo Cliente</h1>
       <form className={classes.form} onSubmit={handleSubmit}>
 
-<TextField 
-  id="nome" 
-  label="Nome" 
-  variant="filled"
-  value={clientes.nome}
-  onChange={handleInputChange}
-  required  /* not null, precisa ser preenchido */
-  placeholder="Informe o nome do cliente"
-  fullWidth
-/>
-<InputMask
-            id="cpf" 
-            mask={cpfMask}
-            formatChars={formatChars}
-            value={clientes.cpfMask}
-            onChange={(event) => handleInputChange(event, 'cpf')}
-          >
-            {() => <TextField 
-              label="CPF" 
-              variant="filled"
-              required  /* not null, precisa ser preenchido */
-              placeholder="Informe o CPF do Cliente"
-              fullWidth
-            />}
-          </InputMask>
-<TextField 
-  id="rg" 
-  label="RG" 
-  variant="filled"
-  value={clientes.rg}
-  onChange={handleInputChange}
-  required  /* not null, precisa ser preenchido */
-  placeholder="Informe o rg do cliente"
-  fullWidth
-/>
+        <TextField 
+          id="nome" 
+          label="Nome" 
+          variant="filled"
+          value={cliente.nome}
+          onChange={handleInputChange}
+          required  /* not null, precisa ser preenchido */
+          placeholder="Informe o nome do cliente"
+          fullWidth
+        />
+        <InputMask
+          id="cpf" 
+          mask={cpfMask}
+          formatChars={formatChars}
+          value={cliente.cpfMask}
+          onChange={(event) => handleInputChange(event, 'cpf')}
+        >
+          {() => <TextField 
+            label="CPF" 
+            variant="filled"
+            required  /* not null, precisa ser preenchido */
+            placeholder="Informe o CPF do Cliente"              fullWidth
+          />}
+        </InputMask>
+        <TextField 
+          id="rg" 
+          label="RG" 
+          variant="filled"
+          value={cliente.rg}
+          onChange={handleInputChange}
+          required  /* not null, precisa ser preenchido */
+          placeholder="Informe o rg do cliente"
+          fullWidth
+        />
         <TextField 
           id="logradouro" 
           label="Logradouro" 
-          variant="filled"
-          value={clientes.logradouro}
+           variant="filled"
+          value={cliente.logradouro}
           onChange={handleInputChange}
           required  /* not null, precisa ser preenchido */
           placeholder="Informe o logradouro"
@@ -222,29 +217,29 @@ export default function ClientesForm() {
           id="num_imovel" 
           label="Número" 
           variant="filled"
-          value={clientes.num_imovel}
-          onChange={handleInputChange)}
+          value={cliente.num_imovel}
+          onChange={handleInputChange}
           required  /* not null, precisa ser preenchido */
           placeholder="Informe o número do imovel do cliente"
           select
           fullWidth
         />
           
-          <TextField 
-            id="complemento" 
-            label="Complemento" 
-            variant="filled"
-            value={clientes.complemento}
-            onChange={handleInputChange}
-            required  /* not null, precisa ser preenchido */
-            placeholder="Informe complemento do imovel do cliente"
-            fullWidth
-          />
+         <TextField 
+           id="complemento" 
+           label="Complemento" 
+           variant="filled"
+           value={cliente.complemento}
+           onChange={handleInputChange}
+           required  /* not null, precisa ser preenchido */
+           placeholder="Informe complemento do imovel do cliente"
+           fullWidth
+         />
           <TextField 
             id="bairro" 
             label="Bairro" 
             variant="filled"
-            value={clientes.bairro}
+            value={cliente.bairro}
             onChange={handleInputChange}
             required  /* not null, precisa ser preenchido */
             placeholder="Informe o bairro do imovel do cliente"
@@ -254,19 +249,19 @@ export default function ClientesForm() {
             id="municipio" 
             label="Município" 
             variant="filled"
-            value={clientes.municipio}
+            value={cliente.municipio}
             onChange={handleInputChange}
             required  /* not null, precisa ser preenchido */
             placeholder="Informe o município do imovel do cliente"
             fullWidth
           />
 
-<InputMask
+        <InputMask
             id="uf" 
             mask={cpfMask}
             formatChars={formatChars}
-            value={clientes.ufMask}
-            onChange={(event) => handleInputChange(event, 'cpf')}
+            value={cliente.ufMask}
+            onChange={(event) => handleInputChange(event, 'uf')}
           >
             {() => <TextField 
               label="UF" 
@@ -275,12 +270,13 @@ export default function ClientesForm() {
               placeholder="Informe o UF do imovel do cliente"
               fullWidth
             />}
-          </InputMask>
+        </InputMask>
+
           <TextField 
             id="telefone" 
             label="Telefone" 
             variant="filled"
-            value={clientes.telefone}
+            value={cliente.telefone}
             onChange={handleInputChange}
             required  /* not null, precisa ser preenchido */
             placeholder="Informe o telefone do cliente"
@@ -290,7 +286,7 @@ export default function ClientesForm() {
             id="telefone" 
             label="Telefone" 
             variant="filled"
-            value={clientes.telefone}
+            value={cliente.telefone}
             onChange={handleInputChange}
             required  /* not null, precisa ser preenchido */
             placeholder="Informe o telefone do cliente"
@@ -305,7 +301,7 @@ export default function ClientesForm() {
           </Toolbar>
   
           <div>
-            {JSON.stringify(karango)}
+            {JSON.stringify(cliente)}
             <br />
             currentId: {JSON.stringify(currentId)}
           </div>
