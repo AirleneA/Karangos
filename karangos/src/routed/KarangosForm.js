@@ -13,6 +13,7 @@ import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import Snackbar from '@material-ui/core/Snackbar'
 import MuiAlert from '@material-ui/lab/Alert'
+import React from 'react'
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -69,7 +70,6 @@ export default function KarangosForm() {
     '#': '[0-9A-Ja-j]'
   }
 
-  
   // Máscara de entrada para a placa
   const placaMask = 'AAA-0#00'
 
@@ -101,11 +101,23 @@ export default function KarangosForm() {
     message: '' 
   })
 
+  const [error, setError] = useState({
+    marca: '',
+    modelo: '',
+    placa: '',
+    preco: ''
+  })
+
+  const [isValid, setIsValid] = useState(false)
+
+  const [isModified, setIsModified] = useState(false)
+
   const history = useHistory()
 
   function handleInputChange(event, property) {
     setCurrentId(event.target.id)
     if(event.target.id) property = event.target.id
+
     if(property === 'importado') {
       const newState = ! importadoChecked // Inverte o valor
       if(newState) setKarango({...karango, importado: '1'})
@@ -121,18 +133,57 @@ export default function KarangosForm() {
       // variável ou expressão contida dentro dos colchetes
       setKarango({...karango, [property]: event.target.value})
     }
+    setIsModified(true)   // O formulário foi modificado
+    validate()  // Dispara a validação
+  }
+
+  function validate() {
+    let valid = true
+
+    const newErrors = {
+      marca: '',
+      modelo: '',
+      placa: '',
+      preco: ''
+    }
+
+    // trim(): retira espaços em branco do início e do final de uma string
+    if(karango.marca.trim() === '') {
+      newErrors.marca = 'A marca deve ser preenchida'
+      valid = false
+    }     
+
+    if(karango.modelo.trim() === '') {
+      newErrors.modelo = 'O modelo deve ser preenchido'
+      valid = false
+    }
+
+    // A placa não pode ser string vazia nem conter sublinhado
+    if(karango.placa.trim() === '' || karango.placa.includes('_')) {
+      newErrors.placa = 'A placa deve ser preenchida corretamente'
+      valid = false
+    }
+
+    // O preço deve ser numérico e maior que zero
+    if(isNaN(karango.preco) || Number(karango.preco) <= 0) {
+      newErrors.preco = 'O preço deve ser informado e maior que zero'
+      valid = false
+    }
+
+    setError(newErrors)
+    setIsValid(valid)
   }
 
   async function saveData() {
     try {
       // Desabilita o botão de enviar para evitar envios duplicados
       setSendBtnStatus({disabled: true, label: 'Enviando...'})
-
+      
       await axios.post('https://api.faustocintra.com.br/karangos', karango)
-
+      
       // Mostra a SnackBar
       setSbStatus({open: true, severity: 'success', message: 'Dados salvos com sucesso!'})
-
+      
     }
     catch(error) {
       // Mostra a SnackBar
@@ -167,29 +218,34 @@ export default function KarangosForm() {
 
       <h1>Cadastrar novo karango</h1>
       <form className={classes.form} onSubmit={handleSubmit}>
+        
+        <TextField 
+          id="marca" 
+          label="Marca" 
+          variant="filled"
+          value={karango.marca}
+          onChange={handleInputChange}
+          required  /* not null, precisa ser preenchido */
+          placeholder="Informe a marca do veículo"
+          fullWidth
+          error={error.marca !== ''}
+          helperText={error.marca}
+        />
 
-<TextField 
-  id="marca" 
-  label="Marca" 
-  variant="filled"
-  value={karango.marca}
-  onChange={handleInputChange}
-  required  /* not null, precisa ser preenchido */
-  placeholder="Informe a marca do veículo"
-  fullWidth
-/>
-<TextField 
-  id="modelo" 
-  label="Modelo" 
-  variant="filled"
-  value={karango.modelo}
-  onChange={handleInputChange}
-  required  /* not null, precisa ser preenchido */
-  placeholder="Informe o modelo do veículo"
-  fullWidth
-/>
+        <TextField 
+          id="modelo" 
+          label="Modelo" 
+          variant="filled"
+          value={karango.modelo}
+          onChange={handleInputChange}
+          required  /* not null, precisa ser preenchido */
+          placeholder="Informe o modelo do veículo"
+          fullWidth
+          error={error.modelo !== ''}
+          helperText={error.modelo}
+        />
 
-<TextField 
+        <TextField 
           id="cor" 
           label="Cor" 
           variant="filled"
@@ -202,6 +258,7 @@ export default function KarangosForm() {
         >
           { colors.map(color => <MenuItem value={color}>{color}</MenuItem>)}
         </TextField>
+
         <TextField 
           id="ano_fabricacao" 
           label="Ano de fabricação" 
@@ -215,65 +272,72 @@ export default function KarangosForm() {
         >
           { years.map(year => <MenuItem value={year}>{year}</MenuItem>)}
         </TextField>
+
         <FormControl fullWidth>
           <FormControlLabel control={
             <Checkbox
               id="importado"
               checked={importadoChecked}
               onChange={handleInputChange}
+            />
+          }
+          label="Importado?"
+        />
+        </FormControl>
 
-              />
-            }
-            label="Importado?"
-          />
-          </FormControl>
-  
-          <InputMask
-            id="placa" 
-
-            mask={placaMask}
-            formatChars={formatChars}
-            value={karango.placa}
-            onChange={(event) => handleInputChange(event, 'placa')}
-          >
-            {() => <TextField 
-              label="Placa" 
-              variant="filled"
-              required  /* not null, precisa ser preenchido */
-              placeholder="Informe a placa do veículo"
-              fullWidth
-            />}
-          </InputMask>
-  
-          <TextField 
-            id="preco" 
-            label="Preço" 
+        <InputMask
+          id="placa" 
+          mask={placaMask}
+          formatChars={formatChars}
+          value={karango.placa}
+          onChange={(event) => handleInputChange(event, 'placa')}
+        >
+          {() => <TextField 
+            label="Placa" 
             variant="filled"
-            value={karango.preco}
-            onChange={handleInputChange}
             required  /* not null, precisa ser preenchido */
-            placeholder="Informe o valor do veículo"
+            placeholder="Informe a placa do veículo"
             fullWidth
-            type="number"
-            onFocus={event => event.target.select()}  // Seleciona o conteúdo ao focar
-            InputProps={{
-              startAdornment: <InputAdornment position="start">R$</InputAdornment>,
-            }}
-          />
-  
-          <Toolbar className={classes.toolbar}>
-            <Button type="submit" variant="contained" color="secondary" disabled={sendBtnStatus.disabled}>
-              {sendBtnStatus.label}
-            </Button>
-            <Button variant="contained">Voltar</Button>
-          </Toolbar>
-  
-          <div>
-            {JSON.stringify(karango)}
-            <br />
-            currentId: {JSON.stringify(currentId)}
-          </div>
-        </form>
-      </>
-    )
-  }
+            error={error.placa !== ''}
+            helperText={error.placa}
+          />}
+        </InputMask>
+
+        <TextField 
+          id="preco" 
+          label="Preço" 
+          variant="filled"
+          value={karango.preco}
+          onChange={handleInputChange}
+          required  /* not null, precisa ser preenchido */
+          placeholder="Informe o valor do veículo"
+          fullWidth
+          type="number"
+          onFocus={event => event.target.select()}  // Seleciona o conteúdo ao focar
+          InputProps={{
+            startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+          }}
+          error={error.preco !== ''}
+          helperText={error.preco}
+        />
+
+        <Toolbar className={classes.toolbar}>
+          <Button type="submit" variant="contained" color="secondary" disabled={sendBtnStatus.disabled}>
+            {sendBtnStatus.label}
+          </Button>
+          <Button variant="contained">Voltar</Button>
+        </Toolbar>
+
+        <div>
+          {JSON.stringify(karango)}
+          <br />
+          currentId: {JSON.stringify(currentId)}
+          <br />
+          isValid: {JSON.stringify(isValid)}
+          <br />
+          isModified: {JSON.stringify(isModified)}
+        </div>
+      </form>
+    </>
+  )
+}

@@ -101,6 +101,16 @@ export default function ClientesForm() {
     severity: 'success',
     message: '' 
   })
+  const [error, setError] = useState({
+    marca: null,
+    modelo: null,
+    placa: null,
+    preco: null
+  })
+
+  const [isValid, setIsValid ] = useState(false)
+
+  const [isValid, setIsValid ] = useState(false)
 
   const history = useHistory()
 

@@ -42,6 +42,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(2, 0)
   }
 }));
+
 export default function KarangosList() {
   const classes = useStyles()
 
@@ -52,26 +53,28 @@ export default function KarangosList() {
   const [sbOpen, setSbOpen] = useState(false)
   const [sbSeverity, setSbSeverity] = useState('success')
   const [sbMessage, setSbMessage] = useState('Exclusão realizada com sucesso.')
-
+  
   const history = useHistory()
 
   useEffect(() => {
-    async function getData() {
-      try { // tenta buscar os dados
-        let response = await axios.get('https://api.faustocintra.com.br/karangos?by=marca,modelo')
-        setKarangos(response.data)
-      }
-      catch(error) {
-        console.error(error)
-      }
-    }
     getData()
   }, []) // Quando a lista de dependências é um vetor vazio, o useEffect()
          // é executado apenas uma vez, no carregamento inicial do componente
 
+  async function getData() {
+    try { // tenta buscar os dados
+      let response = await axios.get('https://api.faustocintra.com.br/karangos?by=marca,modelo')
+      if(response.data.length > 0) setKarangos(response.data)
+    }
+    catch(error) {
+      console.error(error)
+    }
+  }
+
   async function deleteItem() {
     try {
       await axios.delete(`https://api.faustocintra.com.br/karangos/${deletable}`)
+      getData()     // Atualiza os dados da tabela
       setSbSeverity('success')
       setSbMessage('Exclusão efetuada com sucesso.')
     }
@@ -103,13 +106,13 @@ export default function KarangosList() {
       <ConfirmDialog isOpen={dialogOpen} onClose={handleDialogClose}>
         Deseja realmente excluir este karango?
       </ConfirmDialog>
-
+      
       <Snackbar open={sbOpen} autoHideDuration={6000} onClose={handleSbClose}>
         <MuiAlert elevation={6} variant="filled" onClose={handleSbClose} severity={sbSeverity}>
           {sbMessage}
         </MuiAlert>
       </Snackbar>
-
+      
       <h1>Listagem de Karangos</h1>
       <Toolbar className={classes.toolbar}>
         <Button color="secondary" variant="contained" size="large" 
@@ -154,7 +157,7 @@ export default function KarangosList() {
                 </IconButton>                
               </TableCell>
               <TableCell align="center">
-                 <IconButton aria-label="excluir" onClick={() => handleDelete(karango.id)}>
+                <IconButton aria-label="excluir" onClick={() => handleDelete(karango.id)}>
                   <DeleteIcon color="error" />
                 </IconButton>
               </TableCell>
@@ -166,61 +169,3 @@ export default function KarangosList() {
     </>
   )
 }
- 56  karangos/src/ui/ConfirmDialog.js 
-@@ -0,0 +1,56 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import WarningIcon from '@material-ui/icons/Warning';
-import { makeStyles } from '@material-ui/core/styles';
-import yellow from '@material-ui/core/colors/yellow'
-
-const useStyle = makeStyles(theme => ({
-  dialogContent: {
-    display: 'flex',
-    justifyContent: 'space-between'
-  },
-  warningIcon: {
-    color: yellow[500],
-    marginRight: theme.spacing(2)
-  }
-}))
-
-export default function ConfirmDialog({title = 'Confirmar', isOpen = false, onClose, children}) {
-  const classes = useStyle()
-
-  const handleClose = (result) => {
-    onClose(result)
-  };
-
-  return (
-    <div>
-      <Dialog
-        open={isOpen}
-        onClose={() => handleClose(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-        <DialogContent className={classes.dialogContent}>
-          <WarningIcon className={classes.warningIcon} fontSize="large" />
-          <DialogContentText id="alert-dialog-description">
-            {children}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => handleClose(true)} color="primary">
-            OK
-          </Button>
-          <Button onClick={() => handleClose(false)} color="primary" autoFocus>
-            Cancelar
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  );
-} 
