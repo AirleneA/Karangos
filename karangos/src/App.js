@@ -73,6 +73,11 @@ function Main() {
             </Route>
             <Route path="/new">
 
+             {/* :id é um parâmetro (espécie de variável de rota) */}
+             <Route path="/edit/:id">
+              <KarangosForm />
+            </Route>
+
               <KarangosForm />
             </Route>
           </Switch>
