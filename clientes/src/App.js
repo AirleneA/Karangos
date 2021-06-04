@@ -77,6 +77,12 @@ function Main() {
             </Route>
           </Switch>
 
+           {/* :id é um parâmetro (espécie de variável de rota) */}
+           <Route path="/edit/:id">
+              <ClientesForm />
+            </Route>
+
+
         </Box>
         <FooterBar />
       </BrowserRouter>

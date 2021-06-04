@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react'
 import TextField from '@material-ui/core/TextField'
 import MenuItem from '@material-ui/core/MenuItem'
-import FormControl from '@material-ui/core/FormControl'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
 import InputMask from 'react-input-mask'
 import { makeStyles } from '@material-ui/core/styles'
-import InputAdornment from '@material-ui/core/InputAdornment'
 import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
 import axios from 'axios'
@@ -15,6 +11,7 @@ import Snackbar from '@material-ui/core/Snackbar'
 import MuiAlert from '@material-ui/lab/Alert'
 import React from 'react'
 import ConfirmDialog from '../ui/ConfirmDialog'
+
 
 const useStyles = makeStyles(theme => ({
   form: {
@@ -95,7 +92,6 @@ export default function ClinetesForm() {
     telefone: '',
     email: '',
   })
-  const [currentId, setCurrentId] = useState()
 
   const [sendBtnStatus, setSendBtnStatus] = useState({
     disabled: false,
@@ -133,7 +129,7 @@ export default function ClinetesForm() {
       setTitle('Editar cliente')
       getData(params.id)
     }
-  }, [])
+  },[params.id])
 
   async function getData(id) {
     try {
@@ -153,6 +149,7 @@ export default function ClinetesForm() {
 
     const clienteTemp = {...cliente}
 
+    // eslint-disable-next-line no-undef
     setCurrentId(event.target.id)
     if(event.target.id) property = event.target.id
 
@@ -212,35 +209,29 @@ export default function ClinetesForm() {
       errorTemp.num_imovel = 'O número do imóvel deve ser preenchido'
       isValid = false
     }
+
     if(data.bairro.trim() === '') {
       errorTemp.bairro = 'O bairro deve ser preenchido'
       isValid = false
     }
    
+    if(data.municipio.trim() === '') {
+      errorTemp.minicipio = 'O município  deve ser preenchido'
+      isValid = false
+    }
+
     if(data.uf.trim() === '') {
       errorTemp.cor = 'O estado deve ser informado'
       isValid = false
     } 
 
-    if(data.modelo.trim() === '') {
-      errorTemp.modelo = 'O modelo deve ser preenchido'
+    if(data.telefone.trim() === '') {
+      errorTemp.telefone = 'O telefone deve ser preenchido'
       isValid = false
     }
 
-    if(data.cor.trim() === '') {
-      errorTemp.cor = 'A cor deve ser informada'
-      isValid = false
-    }
-
-    // A placa não pode ser string vazia nem conter sublinhado
-    if(data.placa.trim() === '' || data.placa.includes('_')) {
-      errorTemp.placa = 'A placa deve ser preenchida corretamente'
-      isValid = false
-    }
-
-    // O preço deve ser numérico e maior que zero
-    if(isNaN(data.preco) || Number(data.preco) <= 0) {
-      errorTemp.preco = 'O preço deve ser informado e maior que zero'
+    if(data.email.trim() === '') {
+      errorTemp.email = 'O email deve ser informado'
       isValid = false
     }
 
@@ -254,9 +245,9 @@ export default function ClinetesForm() {
       setSendBtnStatus({disabled: true, label: 'Enviando...'})
       
       // Se estivermos editando, precisamos enviar os dados com o verbo HTTP PUT
-      if(params.id) await axios.put(`https://api.faustocintra.com.br/karangos/${params.id}`, karango)
+      if(params.id) await axios.put(`https://api.faustocintra.com.br/clientes/${params.id}`, cliente)
       // Senão, estaremos criando um novo registro, e o verbo HTTP a ser usado é o POST
-      else await axios.post('https://api.faustocintra.com.br/karangos', karango)
+      else await axios.post('https://api.faustocintra.com.br/clientes', cliente)
       
       // Mostra a SnackBar
       setSbStatus({open: true, severity: 'success', message: 'Dados salvos com sucesso!'})
@@ -275,7 +266,7 @@ export default function ClinetesForm() {
     event.preventDefault()    // Evita que a página seja recarregada
 
     // Só envia para o banco de dados se o formulário for válido
-    if(validate(karango)) saveData()
+    if(validate(cliente)) saveData()
 
   }
 
@@ -317,107 +308,150 @@ export default function ClinetesForm() {
       <form className={classes.form} onSubmit={handleSubmit}>
         
         <TextField 
-          id="marca" 
-          label="Marca" 
+          id="nome" 
+          label="Nome" 
           variant="filled"
-          value={karango.marca}
+          value={cliente.nome}
           onChange={handleInputChange}
           required  /* not null, precisa ser preenchido */
           placeholder="Informe a marca do veículo"
           fullWidth
-          error={error.marca !== ''}
-          helperText={error.marca}
+          error={error.nome !== ''}
+          helperText={error.nome}
         />
-
-        <TextField 
-          id="modelo" 
-          label="Modelo" 
-          variant="filled"
-          value={karango.modelo}
-          onChange={handleInputChange}
-          required  /* not null, precisa ser preenchido */
-          placeholder="Informe o modelo do veículo"
-          fullWidth
-          error={error.modelo !== ''}
-          helperText={error.modelo}
-        />
-
-        <TextField 
-          id="cor" 
-          label="Cor" 
-          variant="filled"
-          value={karango.cor}
-          onChange={event => handleInputChange(event, 'cor')}
-          required  /* not null, precisa ser preenchido */
-          placeholder="Informe a cor do veículo"
-          select
-          fullWidth
-          error={error.cor !== ''}
-          helperText={error.cor}
-        >
-          { colors.map(color => <MenuItem value={color} key={color}>{color}</MenuItem>)}
-        </TextField>
-
-        <TextField 
-          id="ano_fabricacao" 
-          label="Ano de fabricação" 
-          variant="filled"
-          value={karango.ano_fabricacao}
-          onChange={event => handleInputChange(event, 'ano_fabricacao')}
-          required  /* not null, precisa ser preenchido */
-          placeholder="Informe o ano de fabricação do veículo"
-          select
-          fullWidth
-        >
-          { years.map(year => <MenuItem value={year} key={year}>{year}</MenuItem>)}
-        </TextField>
-
-        <FormControl fullWidth>
-          <FormControlLabel control={
-            <Checkbox
-              id="importado"
-              checked={importadoChecked}
-              onChange={handleInputChange}
-            />
-          }
-          label="Importado?"
-        />
-        </FormControl>
 
         <InputMask
-          id="placa" 
-          mask={placaMask}
+          id="cpf" 
+          mask={cpfMask}
           formatChars={formatChars}
-          value={karango.placa}
-          onChange={(event) => handleInputChange(event, 'placa')}
+          value={cliente.cpf}
+          onChange={(event) => handleInputChange(event, 'cpf')}
         >
           {() => <TextField 
-            label="Placa" 
+            label="CPF" 
             variant="filled"
             required  /* not null, precisa ser preenchido */
-            placeholder="Informe a placa do veículo"
+            placeholder="Informe o CPF do cliente"
             fullWidth
-            error={error.placa !== ''}
-            helperText={error.placa}
+            error={error.cpf !== ''}
+            helperText={error.cpf}
           />}
         </InputMask>
-
+        
         <TextField 
-          id="preco" 
-          label="Preço" 
+          id="rg" 
+          label="RG" 
           variant="filled"
-          value={karango.preco}
+          value={cliente.rg}
           onChange={handleInputChange}
           required  /* not null, precisa ser preenchido */
-          placeholder="Informe o valor do veículo"
+          placeholder="Informe o rg do cliente"
           fullWidth
-          type="number"
-          onFocus={event => event.target.select()}  // Seleciona o conteúdo ao focar
-          InputProps={{
-            startAdornment: <InputAdornment position="start">R$</InputAdornment>,
-          }}
-          error={error.preco !== ''}
-          helperText={error.preco}
+          error={error.rg !== ''}
+          helperText={error.rg}
+        />
+
+        <TextField 
+          id="logradouro" 
+          label="Logradouro" 
+          variant="filled"
+          value={cliente.logradouro}
+          onChange={handleInputChange}
+          required  /* not null, precisa ser preenchido */
+          placeholder="Informe o logradouro do imovel do cliente"
+          fullWidth
+          error={error.logradouro !== ''}
+          helperText={error.logradouro}
+        />
+
+        <TextField 
+          id="num_imovel" 
+          label="Número do imovel" 
+          variant="filled"
+          value={cliente.num_imovel}
+          onChange={handleInputChange}
+          required  /* not null, precisa ser preenchido */
+          placeholder="Informe o número do imóvel do cliente"
+          fullWidth
+          error={error.num_imovel !== ''}
+          helperText={error.num_imovel}
+        />
+
+        <TextField 
+          id="complemento" 
+          label="Complemento" 
+          variant="filled"
+          value={cliente.complemento}
+          onChange={handleInputChange}
+          fullWidth
+        />
+        
+        <TextField 
+          id="bairro" 
+          label="Bairro" 
+          variant="filled"
+          value={cliente.bairro}
+          onChange={handleInputChange}
+          required  /* not null, precisa ser preenchido */
+          placeholder="Informe o bairro do imovel do cliente"
+          fullWidth
+          error={error.bairro !== ''}
+          helperText={error.bairro}
+        />
+
+        <TextField 
+          id="municipio" 
+          label="Município" 
+          variant="filled"
+          value={cliente.municipio}
+          onChange={handleInputChange}
+          required  /* not null, precisa ser preenchido */
+          placeholder="Informe o município"
+          fullWidth
+          error={error.municipio !== ''}
+          helperText={error.municipio}
+        />
+
+        <TextField 
+          id="uf" 
+          label="UF" 
+          variant="filled"
+          value={cliente.useEffect}
+          onChange={event => handleInputChange(event, 'cor')}
+          required  /* not null, precisa ser preenchido */
+          placeholder="Informe estado"
+          select
+          fullWidth
+          error={error.uf !== ''}
+          helperText={error.uf}
+        >
+          { estados.map(uf => <MenuItem value={uf} key={uf}>{uf}</MenuItem>)}
+        </TextField>
+
+        <TextField 
+          id="telefone" 
+          label="Telefone" 
+          variant="filled"
+          value={cliente.telefone}
+          onChange={handleInputChange}
+          required  /* not null, precisa ser preenchido */
+          placeholder="Informe o telefone do cliente"
+          fullWidth
+          error={error.telefone !== ''}
+          helperText={error.telefone}
+        />
+          
+        <TextField 
+          id="email" 
+          label="Email" 
+          variant="filled"
+          value={cliente.email}
+          onChange={handleInputChange}
+          required  /* not null, precisa ser preenchido */
+          placeholder="Informe o email do cliente"
+          fullWidth
+          error={error.email !== ''}
+          helperText={error.email}
         />
 
         <Toolbar className={classes.toolbar}>

@@ -182,7 +182,7 @@ export default function ClientesList2() {
       headerAlign: 'center', 
       flex: true,
       renderCell: params => (
-        <IconButton aria-label="editar">
+        <IconButton aria-label="editar" onClick={() => history.push(`/edit/${params.id}`)}>
           <EditIcon />
         </IconButton>
       )

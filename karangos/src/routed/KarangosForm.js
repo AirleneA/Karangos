@@ -87,10 +87,7 @@ export default function KarangosForm() {
     placa: '',
     preco: 0
   })
-  const [currentId, setCurrentId] = useState()
-
-  const [importadoChecked, setImportadoChecked] = useState(false)
-
+ 
   const [sendBtnStatus, setSendBtnStatus] = useState({
     disabled: false,
     label: 'Enviar'
