@@ -13,6 +13,9 @@ import React from 'react'
 import ConfirmDialog from '../ui/ConfirmDialog'
 
 
+
+
+
 const useStyles = makeStyles(theme => ({
   form: {
     display: 'flex',
@@ -34,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function ClinetesForm() {
+export default function ClientesForm() {
   const classes = useStyles()
 
   const estados = [
@@ -78,6 +81,9 @@ export default function ClinetesForm() {
   // Máscara para CPF: '000.000.000-00'
   const cpfMask = '000.000.000-00'
 
+   // Máscara para CPF: '000.000.000-00'
+  const ufMask = 'AA'
+
   const [cliente, setCliente] = useState({
     id: null,
     nome: '',
@@ -93,6 +99,8 @@ export default function ClinetesForm() {
     email: '',
   })
 
+  const [currentId, setCurrentId] = useState()
+
   const [sendBtnStatus, setSendBtnStatus] = useState({
     disabled: false,
     label: 'Enviar'
@@ -105,18 +113,23 @@ export default function ClinetesForm() {
   })
 
   const [error, setError] = useState({
-    marca: '',
-    modelo: '',
-    cor: '',
-    placa: '',
-    preco: ''
+    nome: '',
+    cpf: '',
+    rg: '',
+    logradouro: '',
+    num_imovel: '',
+    bairro: '',
+    município: '',
+    uf: '', 
+    telefone: '',
+    email: '',
   })
 
   const [isModified, setIsModified] = useState(false)
 
   const [dialogOpen, setDialogOpen] = useState(false) // O diálogo de confirmação está aberto?
 
-  const [title, setTitle] = useState('Cadastrar novo karango')
+  const [title, setTitle] = useState('Cadastrar novo cliente')
 
   const history = useHistory()
   const params = useParams()
@@ -129,7 +142,7 @@ export default function ClinetesForm() {
       setTitle('Editar cliente')
       getData(params.id)
     }
-  },[params.id])
+  })
 
   async function getData(id) {
     try {
@@ -149,19 +162,19 @@ export default function ClinetesForm() {
 
     const clienteTemp = {...cliente}
 
-    // eslint-disable-next-line no-undef
-    setCurrentId(event.target.id)
+    setCurrentId(event.target.id) 
     if(event.target.id) property = event.target.id
 
-   if(property === 'cpf') {
-      clienteTemp.cpf = event.target.value.toUpperCase()
-    }
-    else {
+      else if(property === 'cpf') {
+        clienteTemp.cpf = event.target.value.toUpperCase()
+      }
+      else {
       // Quando o nome de uma propriedade de objeto aparece entre [],
       // significa que o nome da propriedade será determinado pela
       // variável ou expressão contida dentro dos colchetes
-     clienteTemp[property] = event.target.value
-    }
+        clienteTemp[property] = event.target.value
+      }
+    
     setCliente(clienteTemp)
     setIsModified(true)   // O formulário foi modificado
     validate(clienteTemp)  // Dispara a validação
@@ -176,12 +189,12 @@ export default function ClinetesForm() {
       rg: '',
       logradouro: '',
       num_imovel: '',
-      complemento:'',
+      complemento: '',
       bairro: '',
       município: '',
       uf: '', 
       telefone: '',
-      email: '',
+      email: ''   
     }
 
     // trim(): retira espaços em branco do início e do final de uma string
@@ -216,7 +229,7 @@ export default function ClinetesForm() {
     }
    
     if(data.municipio.trim() === '') {
-      errorTemp.minicipio = 'O município  deve ser preenchido'
+      errorTemp.municipio = 'O município deve ser preenchido'
       isValid = false
     }
 
@@ -314,7 +327,7 @@ export default function ClinetesForm() {
           value={cliente.nome}
           onChange={handleInputChange}
           required  /* not null, precisa ser preenchido */
-          placeholder="Informe a marca do veículo"
+          placeholder="Informe o nome do cliente"
           fullWidth
           error={error.nome !== ''}
           helperText={error.nome}
@@ -416,8 +429,8 @@ export default function ClinetesForm() {
           id="uf" 
           label="UF" 
           variant="filled"
-          value={cliente.useEffect}
-          onChange={event => handleInputChange(event, 'cor')}
+          value={cliente.uf}
+          onChange={event => handleInputChange(event, 'uf')}
           required  /* not null, precisa ser preenchido */
           placeholder="Informe estado"
           select

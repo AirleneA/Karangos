@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 2,
   },
   logo:{ //criei uma classe chamada logo para diminuir os pixels
-      width: '150px'
+      width: '250px'
   }
 }));
 

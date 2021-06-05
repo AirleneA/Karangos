@@ -131,7 +131,6 @@ export default function ClientesList2() {
       align: 'center',
       headerAlign: 'center', 
       flex: true,
-      sortComparator: (v1, v2) => Number(v1) > Number(v2) ? 1 : -1 
     },
     { 
       field: 'complemento', 

@@ -32,7 +32,7 @@ import FooterBar from './ui/FooterBar'
 import Box from '@material-ui/core/Box'
 import { makeStyles } from '@material-ui/core/styles'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import ClientesList2 from './routed/ClientesList2'
+import ClientesList from './routed/ClientesList2'
 import ClientesForm from './routed/ClientesForm'
 
 const theme = createMuiTheme({
@@ -46,6 +46,7 @@ const theme = createMuiTheme({
     },
   },
 });
+
 const useStyles = makeStyles((theme) => ({
   main: {
     backgroundColor: theme.palette.background.default,
@@ -69,20 +70,19 @@ function Main() {
           <Switch> {/* Determina qual elemento será exibido, de acordo com a rota */}
             
             <Route path="/list">
-              <ClientesList2 />
+              <ClientesList/>
             </Route>
+
             <Route path="/new">
-
-              <ClientesForm />
+              <ClientesForm/>
             </Route>
+
+            {/* :id é um parâmetro (espécie de variável de rota) */}
+            <Route path="/edit/:id">
+              <ClientesForm/>
+            </Route>
+
           </Switch>
-
-           {/* :id é um parâmetro (espécie de variável de rota) */}
-           <Route path="/edit/:id">
-              <ClientesForm />
-            </Route>
-
-
         </Box>
         <FooterBar />
       </BrowserRouter>

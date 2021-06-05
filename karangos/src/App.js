@@ -46,6 +46,7 @@ const theme = createMuiTheme({
     },
   },
 });
+
 const useStyles = makeStyles((theme) => ({
   main: {
     backgroundColor: theme.palette.background.default,
@@ -71,17 +72,17 @@ function Main() {
             <Route path="/list">
               <KarangosList />
             </Route>
+
             <Route path="/new">
-
-             {/* :id é um parâmetro (espécie de variável de rota) */}
-             <Route path="/edit/:id">
               <KarangosForm />
             </Route>
 
+            {/* :id é um parâmetro (espécie de variável de rota) */}
+            <Route path="/edit/:id">
               <KarangosForm />
             </Route>
+
           </Switch>
-
         </Box>
         <FooterBar />
       </BrowserRouter>
