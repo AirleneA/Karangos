@@ -74,12 +74,12 @@ function Main() {
             </Route>
 
             <Route path="/new">
-              <ClientesForm/>
+              <ClientesForm />
             </Route>
 
-            {/* :id é um parâmetro (espécie de variável de rota) */}
-            <Route path="/edit/:id">
-              <ClientesForm/>
+           {/* :id é um parâmetro (espécie de variável de rota) */}
+           <Route path="/edit/:id">
+              <ClientesForm />
             </Route>
 
           </Switch>

@@ -53,4 +53,4 @@ export default function ConfirmDialog({title = 'Confirmar', isOpen = false, onCl
       </Dialog>
     </div>
   );
-} 
+}

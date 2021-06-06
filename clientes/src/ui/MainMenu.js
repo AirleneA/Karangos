@@ -3,17 +3,17 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import { makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
-    menuButton: {
-      marginRight: theme.spacing(2), 
-    },
-    menuLink: {
-      color:theme.palette.text.primary,
-      textDecoration: 'none'//sem sublinhado
-    }
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  menuLink: {
+    color: theme.palette.text.primary,
+    textDecoration: 'none'    // Sem sublinhado
+  }
 }));
 
 export default function MainMenu() {
@@ -45,11 +45,11 @@ export default function MainMenu() {
         onClose={handleClose}
       >
         <MenuItem onClick={handleClose}>
-          <Link to= "/list" className={classes.menuLink}>Listar Clientes</Link>
+          <Link to="/list" className={classes.menuLink}>Listar clientes</Link>
         </MenuItem>
-
+        
         <MenuItem onClick={handleClose}>
-          <Link to= "/new" className={classes.menuLink}> Cadastrar novo Cliente </Link>
+          <Link to="/new" className={classes.menuLink}>Cadastrar novo cliente</Link>
         </MenuItem>
         
       </Menu>

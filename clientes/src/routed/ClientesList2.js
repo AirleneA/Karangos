@@ -54,7 +54,7 @@ export default function ClientesList2() {
 
   async function getData() {
     try { // tenta buscar os dados
-      let response = await axios.get('https://api.faustocintra.com.br/clientes?by=nome')
+      let response = await axios.get('https://api.faustocintra.com.br/clientes?by=nome,rg')
       if(response.data.length > 0) setClientes(response.data)
     }
     catch(error) {
@@ -131,7 +131,9 @@ export default function ClientesList2() {
       align: 'center',
       headerAlign: 'center', 
       flex: true,
+      sortComparator: (v1, v2) => Number(v1) > Number(v2) ? 1 : -1
     },
+    
     { 
       field: 'complemento', 
       headerName: 'Complemento',
@@ -203,7 +205,7 @@ export default function ClientesList2() {
   return (
     <>
       <ConfirmDialog isOpen={dialogOpen} onClose={handleDialogClose}>
-        Deseja realmente excluir este karango?
+        Deseja realmente excluir este cliente?
       </ConfirmDialog>
       
       <Snackbar open={sbOpen} autoHideDuration={6000} onClose={handleSbClose}>
@@ -212,11 +214,11 @@ export default function ClientesList2() {
         </MuiAlert>
       </Snackbar>
       
-      <h1>Listagem de Karangos</h1>
+      <h1>Listagem de Clientes</h1>
       <Toolbar className={classes.toolbar}>
         <Button color="secondary" variant="contained" size="large" 
           startIcon={<AddBoxIcon />} onClick={() => history.push('/new')}>
-          Novo Karango
+          Novo Cliente
         </Button>
       </Toolbar>
       <Paper elevation={4}>

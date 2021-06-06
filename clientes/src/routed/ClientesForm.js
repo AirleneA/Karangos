@@ -12,10 +12,6 @@ import MuiAlert from '@material-ui/lab/Alert'
 import React from 'react'
 import ConfirmDialog from '../ui/ConfirmDialog'
 
-
-
-
-
 const useStyles = makeStyles(theme => ({
   form: {
     display: 'flex',
@@ -41,33 +37,33 @@ export default function ClientesForm() {
   const classes = useStyles()
 
   const estados = [
-    `AL`,
-    `AP`,
-    `AM`,
-    `BA`,
-    `CE`,
-    `DF`,
-    `ES`,
-    `GO`,
-    `MA`,
-    `MT`,
-    `MS`,
-    `MG`,
-    `PA`,
-    `PB`,
-    `PR`,
-    `PE`,
-    `PI`,
-    `RJ`,
-    `RN`,
-    `RS`,
-    `RO`,
-    `RR`,
-    `SC`,
-    `SP`, 
-    `SE`,
-    `TO`, 
-]
+    'AL',
+    'AP',
+    'AM',
+    'BA',
+    'CE',
+    'DF',
+    'ES',
+    'GO',
+    'MA',
+    'MT',
+    'MS',
+    'MG',
+    'PA',
+    'PB',
+    'PR',
+    'PE',
+    'PI',
+    'RJ',
+    'RN',
+    'RS',
+    'RO',
+    'RR',
+    'SC',
+    'SP',
+    'SE',
+    'TO'
+  ]
   // Classes de caracters para a máscara da placa
   // 1) Três primeiras posições, somente letras (maiúsculas ou minúsculas) ~> [A-Za-z]
   // 2) Quinta, sétima e oitava posições, somente dígitos ~> [0-9]
@@ -81,9 +77,7 @@ export default function ClientesForm() {
   // Máscara para CPF: '000.000.000-00'
   const cpfMask = '000.000.000-00'
 
-   // Máscara para CPF: '000.000.000-00'
-  const ufMask = 'AA'
-
+  
   const [cliente, setCliente] = useState({
     id: null,
     nome: '',
@@ -91,12 +85,12 @@ export default function ClientesForm() {
     rg: '',
     logradouro: '',
     num_imovel: '',
-    complemento:'',
+    complemento: '',
     bairro: '',
-    município: '',
-    uf: '', 
+    municipio: '',
+    uf: '',
     telefone: '',
-    email: '',
+    email: ''
   })
 
   const [currentId, setCurrentId] = useState()
@@ -119,10 +113,10 @@ export default function ClientesForm() {
     logradouro: '',
     num_imovel: '',
     bairro: '',
-    município: '',
-    uf: '', 
+    municipio: '',
+    uf: '',
     telefone: '',
-    email: '',
+    email: ''
   })
 
   const [isModified, setIsModified] = useState(false)
@@ -134,6 +128,7 @@ export default function ClientesForm() {
   const history = useHistory()
   const params = useParams()
 
+
   // useEffect() para quando o formulário for carregado (só na inicialização)
   useEffect(() => {
     // Verificamos se a rota atual contém o parâmetro id
@@ -142,14 +137,14 @@ export default function ClientesForm() {
       setTitle('Editar cliente')
       getData(params.id)
     }
-  })
+  }, [])
 
   async function getData(id) {
     try {
       let response = await axios.get(`https://api.faustocintra.com.br/clientes/${id}`)
       setCliente(response.data)
-    }
-    catch(error) {
+    } 
+    catch (error) {
       setSbStatus({
         open: true,
         severity: 'error',
@@ -159,25 +154,25 @@ export default function ClientesForm() {
   }
 
   function handleInputChange(event, property) {
-
+    
     const clienteTemp = {...cliente}
 
-    setCurrentId(event.target.id) 
+    setCurrentId(event.target.id)
     if(event.target.id) property = event.target.id
 
-      else if(property === 'cpf') {
-        clienteTemp.cpf = event.target.value.toUpperCase()
-      }
-      else {
+    if(property === "cpf") {
+      clienteTemp.cpf = event.target.value.toUpperCase()
+    } 
+    else {
       // Quando o nome de uma propriedade de objeto aparece entre [],
       // significa que o nome da propriedade será determinado pela
       // variável ou expressão contida dentro dos colchetes
-        clienteTemp[property] = event.target.value
-      }
-    
+      clienteTemp[property] = event.target.value
+    }
+
     setCliente(clienteTemp)
-    setIsModified(true)   // O formulário foi modificado
-    validate(clienteTemp)  // Dispara a validação
+    setIsModified(true) // O formulário foi modificado
+    validate(clienteTemp) // Dispara a validação
   }
 
   function validate(data) {
@@ -189,64 +184,62 @@ export default function ClientesForm() {
       rg: '',
       logradouro: '',
       num_imovel: '',
-      complemento: '',
       bairro: '',
-      município: '',
-      uf: '', 
+      municipio: '',
+      uf: '',
       telefone: '',
-      email: ''   
-    }
+      email: ''
+    };
 
     // trim(): retira espaços em branco do início e do final de uma string
-    if(data.nome.trim() === '') {
+    if (data.nome.trim() === '') {
       errorTemp.nome = 'O nome deve ser preenchido'
       isValid = false
-    }    
+    }
 
-    if(data.cpf.trim() === '' || data.cpf.includes('_')) {
+    if (data.cpf.trim() === '' || data.cpf.includes("_")) {
       errorTemp.cpf = 'O cpf deve ser preenchido corretamente'
       isValid = false
     }
 
-    if(data.rg.trim() === '') {
+    if (data.rg.trim() === '') {
       errorTemp.rg = 'O rg deve ser preenchido'
       isValid = false
     }
-    
-    if(data.logradouro.trim() === '') {
+
+    if (data.logradouro.trim() === '') {
       errorTemp.logradouro = 'O logradouro deve ser preenchido'
       isValid = false
     }
 
-    if(data.num_imovel.trim() === '') {
+    if (data.num_imovel.trim() === '') {
       errorTemp.num_imovel = 'O número do imóvel deve ser preenchido'
       isValid = false
     }
 
-    if(data.bairro.trim() === '') {
+    if (data.bairro.trim() === '') {
       errorTemp.bairro = 'O bairro deve ser preenchido'
       isValid = false
     }
-   
-    if(data.municipio.trim() === '') {
+
+    if (data.municipio.trim() === '') {
       errorTemp.municipio = 'O município deve ser preenchido'
       isValid = false
     }
 
-    if(data.uf.trim() === '') {
-      errorTemp.cor = 'O estado deve ser informado'
+    if (data.uf.trim() === '') {
+      errorTemp.uf = 'O estado deve ser informado'
       isValid = false
-    } 
+    }
 
-    if(data.telefone.trim() === '') {
+    if (data.telefone.trim() === '') {
       errorTemp.telefone = 'O telefone deve ser preenchido'
       isValid = false
     }
 
-    if(data.email.trim() === '') {
+    if (data.email.trim() === '') {
       errorTemp.email = 'O email deve ser informado'
-      isValid = false
-    }
+      isValid = false    }
 
     setError(errorTemp)
     return isValid
@@ -255,17 +248,16 @@ export default function ClientesForm() {
   async function saveData() {
     try {
       // Desabilita o botão de enviar para evitar envios duplicados
-      setSendBtnStatus({disabled: true, label: 'Enviando...'})
-      
+      setSendBtnStatus({ disabled: true, label: 'Enviando...' })
+
       // Se estivermos editando, precisamos enviar os dados com o verbo HTTP PUT
-      if(params.id) await axios.put(`https://api.faustocintra.com.br/clientes/${params.id}`, cliente)
+      if (params.id) await axios.put(`https://api.faustocintra.com.br/clientes/${params.id}`, cliente)
       // Senão, estaremos criando um novo registro, e o verbo HTTP a ser usado é o POST
-      else await axios.post('https://api.faustocintra.com.br/clientes', cliente)
-      
+      else await axios.post("https://api.faustocintra.com.br/clientes", cliente)
+
       // Mostra a SnackBar
-      setSbStatus({open: true, severity: 'success', message: 'Dados salvos com sucesso!'})
-      
-    }
+      setSbStatus({open: true, severity: 'success', message: "Dados salvos com sucesso!"})
+    } 
     catch(error) {
       // Mostra a SnackBar
       setSbStatus({open: true, severity: 'error', message: 'ERRO: ' + error.message})
@@ -306,7 +298,7 @@ export default function ClientesForm() {
 
   return (
     <>
-
+ 
       <ConfirmDialog isOpen={dialogOpen} onClose={handleDialogClose}>
         Há dados não salvos. Deseja realmente voltar?
       </ConfirmDialog>
@@ -319,14 +311,13 @@ export default function ClientesForm() {
 
       <h1>{title}</h1>
       <form className={classes.form} onSubmit={handleSubmit}>
-        
-        <TextField 
-          id="nome" 
-          label="Nome" 
+        <TextField
+          id="nome"
+          label="Nome"
           variant="filled"
           value={cliente.nome}
           onChange={handleInputChange}
-          required  /* not null, precisa ser preenchido */
+          required /* not null, precisa ser preenchido */
           placeholder="Informe o nome do cliente"
           fullWidth
           error={error.nome !== ''}
@@ -334,133 +325,133 @@ export default function ClientesForm() {
         />
 
         <InputMask
-          id="cpf" 
+          id="cpf"
           mask={cpfMask}
           formatChars={formatChars}
           value={cliente.cpf}
           onChange={(event) => handleInputChange(event, 'cpf')}
         >
-          {() => <TextField 
-            label="CPF" 
-            variant="filled"
-            required  /* not null, precisa ser preenchido */
-            placeholder="Informe o CPF do cliente"
-            fullWidth
-            error={error.cpf !== ''}
-            helperText={error.cpf}
-          />}
+          {() => <TextField
+              label="CPF"
+              variant="filled"
+              required /* not null, precisa ser preenchido */
+              placeholder="Informe o CPF do cliente"
+              fullWidth
+              error={error.cpf !== ''}
+              helperText={error.cpf}
+            />}    
         </InputMask>
-        
-        <TextField 
-          id="rg" 
-          label="RG" 
+
+        <TextField
+          id="rg"
+          label="RG"
           variant="filled"
           value={cliente.rg}
           onChange={handleInputChange}
-          required  /* not null, precisa ser preenchido */
+          required /* not null, precisa ser preenchido */
           placeholder="Informe o rg do cliente"
           fullWidth
           error={error.rg !== ''}
           helperText={error.rg}
         />
 
-        <TextField 
-          id="logradouro" 
-          label="Logradouro" 
+        <TextField
+          id="logradouro"
+          label="Logradouro"
           variant="filled"
           value={cliente.logradouro}
           onChange={handleInputChange}
-          required  /* not null, precisa ser preenchido */
+          required /* not null, precisa ser preenchido */
           placeholder="Informe o logradouro do imovel do cliente"
           fullWidth
           error={error.logradouro !== ''}
           helperText={error.logradouro}
         />
 
-        <TextField 
-          id="num_imovel" 
-          label="Número do imovel" 
+        <TextField
+          id="num_imovel"
+          label="Número do imovel"
           variant="filled"
           value={cliente.num_imovel}
           onChange={handleInputChange}
-          required  /* not null, precisa ser preenchido */
+          required /* not null, precisa ser preenchido */
           placeholder="Informe o número do imóvel do cliente"
           fullWidth
           error={error.num_imovel !== ''}
           helperText={error.num_imovel}
         />
 
-        <TextField 
-          id="complemento" 
-          label="Complemento" 
+        <TextField
+          id="complemento"
+          label="Complemento"
           variant="filled"
           value={cliente.complemento}
           onChange={handleInputChange}
           fullWidth
         />
-        
-        <TextField 
-          id="bairro" 
-          label="Bairro" 
+
+        <TextField
+          id="bairro"
+          label="Bairro"
           variant="filled"
           value={cliente.bairro}
           onChange={handleInputChange}
-          required  /* not null, precisa ser preenchido */
+          required /* not null, precisa ser preenchido */
           placeholder="Informe o bairro do imovel do cliente"
           fullWidth
           error={error.bairro !== ''}
           helperText={error.bairro}
         />
 
-        <TextField 
-          id="municipio" 
-          label="Município" 
+        <TextField
+          id="municipio"
+          label="Município"
           variant="filled"
           value={cliente.municipio}
           onChange={handleInputChange}
-          required  /* not null, precisa ser preenchido */
+          required /* not null, precisa ser preenchido */
           placeholder="Informe o município"
           fullWidth
           error={error.municipio !== ''}
           helperText={error.municipio}
         />
-
-        <TextField 
-          id="uf" 
-          label="UF" 
-          variant="filled"
-          value={cliente.uf}
-          onChange={event => handleInputChange(event, 'uf')}
-          required  /* not null, precisa ser preenchido */
-          placeholder="Informe estado"
-          select
-          fullWidth
-          error={error.uf !== ''}
-          helperText={error.uf}
-        >
-          { estados.map(uf => <MenuItem value={uf} key={uf}>{uf}</MenuItem>)}
-        </TextField>
-
-        <TextField 
-          id="telefone" 
-          label="Telefone" 
+        
+          <TextField
+            id="uf"
+            label="UF"
+            variant="filled"
+            value={cliente.uf}
+            onChange={(event) => handleInputChange(event, 'uf')}
+            required /* not null, precisa ser preenchido */
+            placeholder="Informe o estado"
+            select
+            fullWidth
+            error={error.uf !== ''}
+            helperText={error.uf}
+          >
+            { estados.map(uf => <MenuItem value={uf} key={uf}>{uf}</MenuItem>)}
+          </TextField>
+     
+        <TextField
+          id="telefone"
+          label="Telefone"
           variant="filled"
           value={cliente.telefone}
           onChange={handleInputChange}
-          required  /* not null, precisa ser preenchido */
+          required /* not null, precisa ser preenchido */
           placeholder="Informe o telefone do cliente"
           fullWidth
           error={error.telefone !== ''}
           helperText={error.telefone}
         />
-          
-        <TextField 
-          id="email" 
-          label="Email" 
+
+        <TextField
+          id="email"
+          label="Email"
           variant="filled"
           value={cliente.email}
           onChange={handleInputChange}
-          required  /* not null, precisa ser preenchido */
+          required /* not null, precisa ser preenchido */
           placeholder="Informe o email do cliente"
           fullWidth
           error={error.email !== ''}
